@@ -3,7 +3,7 @@ const ctx = canvas.getContext('2d');
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 const particlesArray = [];
-let adjustX = -20;
+let adjustX = 0;
 let adjustY = 0;
 
 const mouse = {
@@ -18,9 +18,8 @@ window.addEventListener('mousemove', (e) => {
 });
 
 ctx.fillStyle = 'white';
-ctx.font = '26px Verdana';
-ctx.fillText('Хуй', 87, 40);
-ctx.fillText('Будешь?', 60, 65);
+ctx.font = '25px Verdana';
+ctx.fillText('Code', 45, 45);
 const textCoordinates = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 class Particle {
@@ -48,16 +47,15 @@ class Particle {
   update() {
     let dx = mouse.x - this.x;
     let dy = mouse.y - this.y;
-    let distance = Math.sqrt(dx * dx + dy * dy);
-    this.distanceToMouse = distance;
-    let forceDirectionX = dx / distance;
-    let forceDirectionY = dy / distance;
+    this.distanceToMouse = Math.sqrt(dx * dx + dy * dy);
+    let forceDirectionX = dx / this.distanceToMouse;
+    let forceDirectionY = dy / this.distanceToMouse;
     let maxDistance = mouse.radius;
-    let force = (maxDistance - distance) / maxDistance;
+    let force = (maxDistance - this.distanceToMouse) / maxDistance;
     let directionX = forceDirectionX * force * this.density;
     let directionY = forceDirectionY * force * this.density;
 
-    if (distance < mouse.radius) {
+    if (this.distanceToMouse < mouse.radius) {
       this.x -= directionX;
       this.y -= directionY;
       this.color = this.activeColor;
@@ -82,7 +80,7 @@ function init() {
       if (textCoordinates.data[(y * 4 * textCoordinates.width) + (x * 4) + 3] > 128) {
         let positionX = x + adjustX;
         let positionY = y + adjustY;
-        let distance = 8;
+        let distance = 10;
         particlesArray.push (new Particle(positionX * distance, positionY * distance));
       }
     }
@@ -109,7 +107,7 @@ function connect() {
 
       let distance = Math.sqrt(dx * dx + dy * dy);
 
-      if (distance < 12) {
+      if (distance < 18) {
         opacityValue = 1 - (distance / 50);
 
         if (particlesArray[a].distanceToMouse < mouse.radius) {
@@ -118,7 +116,7 @@ function connect() {
           ctx.strokeStyle = particlesArray[a].initialColor;
         }
 
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
         ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
