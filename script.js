@@ -5,6 +5,7 @@ canvas.height = window.innerHeight;
 const particlesArray = [];
 let adjustX = 0;
 let adjustY = 0;
+let hue = 0;
 
 const mouse = {
   x: undefined,
@@ -18,17 +19,18 @@ window.addEventListener('mousemove', (e) => {
 });
 
 ctx.fillStyle = 'white';
-ctx.font = '25px Verdana';
-ctx.fillText('Code', 45, 45);
+ctx.font = '15px Verdana';
+ctx.fillText('▇▇▇▇▇', 40, 40);
 const textCoordinates = ctx.getImageData(0, 0, canvas.width, canvas.height);
 
 class Particle {
   constructor(x, y) {
     this.x = x;
     this.y = y;
-    this.color = 'white';
-    this.activeColor = 'rgba(143, 44, 44, 0.2)';
     this.initialColor = 'white';
+    this.color = this.initialColor;
+    this.activeColor = 'rgba(143, 44, 44, 0.2)';
+    // this.activeColor = 'hsl(360, 100%, 50%)';
     this.distanceToMouse = undefined;
     this.size = 3;
     this.baseX = this.x;
@@ -58,7 +60,8 @@ class Particle {
     if (this.distanceToMouse < mouse.radius) {
       this.x -= directionX;
       this.y -= directionY;
-      this.color = this.activeColor;
+      hue += 0.01;
+      this.color = `hsl(${hue}, 100%, 50%)`;
     } else {
       if (this.x !== this.baseX) {
         let dx = this.x - this.baseX;
@@ -111,7 +114,7 @@ function connect() {
         opacityValue = 1 - (distance / 50);
 
         if (particlesArray[a].distanceToMouse < mouse.radius) {
-          ctx.strokeStyle = particlesArray[a].activeColor;
+          ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
         } else {
           ctx.strokeStyle = particlesArray[a].initialColor;
         }
